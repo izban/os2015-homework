@@ -26,3 +26,23 @@ ssize_t write_(int fd, const void *buf, size_t count) {
 	}
 	return processed;
 }
+
+ssize_t read_until(int fd, void *buf, size_t count, char delimeter) {
+	ssize_t processed = 0;
+	char was_delimeter = 0;
+	while (processed < count && !was_delimeter) {
+		ssize_t readed = read(fd, buf + processed, count - processed);
+		if (readed < 0) {
+			return -1;
+		}
+		if (readed == 0) {
+			break;
+		}
+		int i;
+		for (i = 0; i < readed; i++) {
+			was_delimeter |= ((char*)buf)[processed + i] == delimeter;
+		}
+		processed += readed;
+	}
+	return processed;
+}
