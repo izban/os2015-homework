@@ -47,15 +47,44 @@ ssize_t read_until(int fd, void *buf, size_t count, char delimeter) {
 	return processed;
 }
 
+// use [begin..end] before next reading!
+ssize_t read_token(int fd, char delimeter, char** begin, char** end) {
+    static char buf[4096];
+    static ssize_t sz = 0, ptr = 0;
+    while (ptr < sz && buf[ptr] == delimeter) ptr++;
+    if (ptr == sz) {
+        sz = read_until(fd, buf, 4096, delimeter);
+        ptr = 0;
+    }
+    if (sz <= 0) return sz;
+    *begin = buf + ptr;
+    while (ptr < sz && buf[ptr] != delimeter) ptr++;
+    *end = buf + ptr;
+    return *end - *begin;
+}
+
 int spawn(const char * file, char * const argv []) {
-    int pid = fork();    
+    //int i;
+    //printf("%s\n", file);
+    //for (i = 0; argv[i]; i++) printf("%s\n", argv[i]);
+
+    int status = 0;
+    pid_t pid = fork();    
+    if (pid == -1) return -1;
     if (pid == 0) {
-        if (execvp(file, argv) == -1) {
-            return -1;
+        int result = execvp(file, argv);
+        //printf("%s: %d\n", file, result);
+        if (result < 0) {
+            _exit(-1);
         }
-        return 0;
+        _exit(0);
     } else {
-        int status;
-        return waitpid(pid, &status, 0); 
+        pid_t o = waitpid(pid, &status, 0);
+        //printf("smth: %d, %d\n", o, status);
+        if (o < 0) return -1;
+        //printf("%d %d\n", WIFEXITED(status), WEXITSTATUS(status));
+        //if (!WIFEXITED(status) || WEXITSTATUS(status) == 255) return -1;
+        if (status != 0) return -1;
+        return 0; 
     }
 }
