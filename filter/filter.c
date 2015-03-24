@@ -4,7 +4,7 @@ const int BUFFER_SIZE = 4096;
 
 #include <stdio.h>
 
-int main(int argc, const char * argv[]) {
+int main(int argc, char * argv[]) {
     int i;
     char *a[argc + 1];
     for (i = 1; i < argc; i++) a[i - 1] = argv[i];
