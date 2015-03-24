@@ -46,3 +46,16 @@ ssize_t read_until(int fd, void *buf, size_t count, char delimeter) {
 	}
 	return processed;
 }
+
+int spawn(const char * file, char * const argv []) {
+    int pid = fork();    
+    if (pid == 0) {
+        if (execvp(file, argv) == -1) {
+            return -1;
+        }
+        return 0;
+    } else {
+        int status;
+        return waitpid(pid, &status, 0); 
+    }
+}

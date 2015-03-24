@@ -15,10 +15,11 @@ void reverse(char *buf, int l, int r) {
 	}
 }
 
+
 int main() {
-	char buf[BUFFER_SIZE];
+        char buf[BUFFER_SIZE];
 	int cur_ptr = 0, i;
-	while (1) {
+        while (1) {
 		ssize_t readed;
 		readed = read_until(STDIN_FILENO, buf + cur_ptr, BUFFER_SIZE - cur_ptr, ' ');
 		if (readed < 0) {

@@ -1,4 +1,4 @@
-all: 	cat revwords
+all: 	cat revwords filter
 
 cat: 
 	make -C cat
@@ -6,9 +6,13 @@ cat:
 revwords:
 	make -C revwords
 
-.PHONY: cat revwords
+filter:
+	make -C filter
+
+.PHONY: cat revwords filter
 
 clean:
 	make -C cat clean
 	make -C revwords clean
 	make -C lib clean
+	make -C filter clean
